@@ -1,0 +1,1 @@
+export const MaintenancePage = () => <main className="grid min-h-screen place-items-center bg-ink px-4 text-center text-cream"><div><p className="text-sm font-black uppercase tracking-[0.3em] text-gold">Maintenance</p><h1 className="mt-4 text-5xl font-black">Retour tres bientot</h1><p className="mt-3 text-zinc-300">Nous ameliorons votre experience.</p></div></main>;

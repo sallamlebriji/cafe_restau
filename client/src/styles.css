@@ -1,0 +1,170 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f7f1e8;
+  color: #111111;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+/* ── RTL (arabe) ─────────────────────────────────────────────────────────── */
+[dir="rtl"] .sidebar-fixed {
+  left: auto;
+  right: 0;
+}
+
+[dir="rtl"] .main-padded {
+  padding-left: 0;
+  padding-right: 19.5rem;
+}
+
+/* ── Surfaces premium ──────────────────────────────────────────────────────── */
+.premium-surface {
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background: rgba(255, 252, 247, 0.88);
+  box-shadow: 0 18px 45px rgba(17, 17, 17, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+/* ── Mobile touch scrolling ──────────────────────────────────────────────── */
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Scrollbar fine ──────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Status dot ──────────────────────────────────────────────────────────── */
+.status-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+/* ── Print ───────────────────────────────────────────────────────────────── */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* ── FullCalendar ─────────────────────────────────────────────────────────── */
+.fc {
+  --fc-border-color: rgba(11, 11, 15, 0.08);
+  --fc-button-bg-color: #0B0B0F;
+  --fc-button-border-color: #0B0B0F;
+  --fc-button-active-bg-color: #B87333;
+  --fc-event-bg-color: #C8A96A;
+  --fc-event-border-color: #B87333;
+  --fc-event-text-color: #0B0B0F;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.fc .fc-button {
+  border-radius: 0.9rem;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.fc .fc-event {
+  border-radius: 0.7rem;
+  border-width: 1px;
+  min-height: 42px;
+  padding: 2px;
+  font-weight: 800;
+}
+
+.fc .fc-timegrid-event .fc-event-main {
+  min-width: 0;
+}
+
+.fc .fc-timegrid-event {
+  min-width: 96px;
+}
+
+.fc .fc-col-header-cell-cushion {
+  padding: 10px 4px;
+}
+
+.fc .fc-timegrid-slot {
+  height: 3.6rem;
+}
+
+.fc .reservation-confirmed-event {
+  box-shadow: 0 10px 24px rgba(22, 163, 74, 0.22);
+}
+
+/* ── Mobile responsive helpers ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Réduire padding sur petits écrans */
+  .page-content {
+    padding: 0.75rem;
+  }
+
+  /* Kanban scrollable horizontal */
+  .kanban-board {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .kanban-board > * {
+    min-width: 240px;
+    flex-shrink: 0;
+  }
+}
+
+/* ── Liens logiques (RTL/LTR) ────────────────────────────────────────────── */
+.ps-20 { padding-inline-start: 5rem; }
+.ps-\[19\.5rem\] { padding-inline-start: 19.5rem; }
+.ms-1\.5 { margin-inline-start: 0.375rem; }
