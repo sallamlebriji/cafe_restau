@@ -1,34 +1,28 @@
-import { motion } from "framer-motion";
-import { useTranslation } from "react-i18next";
+import { ChevronRight } from "lucide-react";
 
-const keyFromLabel = (value) =>
-  String(value || "")
-    .trim()
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_|_$/g, "");
-
-export const PageHeader = ({ eyebrow, title, description, actions, breadcrumbs = [] }) => {
-  const { t } = useTranslation();
-  const translateMaybe = (value) => t(keyFromLabel(value), { defaultValue: value });
-
-  return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-5 flex flex-col justify-between gap-4 md:mb-6 md:flex-row md:items-end">
-      <div className="min-w-0">
-        {breadcrumbs.length > 0 && (
-          <div className="mb-3 flex flex-wrap gap-2 text-xs font-semibold text-elegant">
-            {breadcrumbs.map((item, index) => (
-              <span key={item}>{translateMaybe(item)}{index < breadcrumbs.length - 1 ? " /" : ""}</span>
-            ))}
-          </div>
-        )}
-        {eyebrow && <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-copper sm:text-xs sm:tracking-[0.28em]">{translateMaybe(eyebrow)}</p>}
-        <h1 className="mt-2 text-2xl font-black tracking-tight text-ink dark:text-cream sm:text-3xl md:text-4xl">{translateMaybe(title)}</h1>
-        {description && <p className="mt-2 max-w-3xl text-sm leading-6 text-elegant">{translateMaybe(description)}</p>}
-      </div>
-      {actions && <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">{actions}</div>}
-    </motion.div>
-  );
-};
+export const PageHeader = ({ eyebrow, title, description, actions, breadcrumbs = [] }) => (
+  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div className="min-w-0">
+      {breadcrumbs.length > 0 && (
+        <nav className="mb-2 flex items-center gap-1 text-xs text-elegant">
+          {breadcrumbs.map((crumb, i) => (
+            <span key={crumb} className="flex items-center gap-1">
+              {i > 0 && <ChevronRight size={12} />}
+              <span className={i === breadcrumbs.length - 1 ? "font-bold text-copper" : ""}>{crumb}</span>
+            </span>
+          ))}
+        </nav>
+      )}
+      {eyebrow && (
+        <p className="text-xs font-black uppercase tracking-widest text-copper">{eyebrow}</p>
+      )}
+      <h1 className="mt-1 text-2xl font-black text-ink dark:text-cream sm:text-3xl">{title}</h1>
+      {description && (
+        <p className="mt-1.5 max-w-2xl text-sm font-semibold leading-relaxed text-elegant">{description}</p>
+      )}
+    </div>
+    {actions && (
+      <div className="flex flex-wrap gap-2 shrink-0">{actions}</div>
+    )}
+  </div>
+);
