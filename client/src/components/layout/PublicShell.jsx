@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet, useParams } from "react-router-dom";
-import { CalendarDays, ChevronRight, Menu, ShoppingBag, X } from "lucide-react";
+import { CalendarDays, ChevronRight, LogIn, Menu, ShoppingBag, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useAppStore } from "../../store/useAppStore";
 import { api } from "../../services/api";
@@ -111,6 +111,13 @@ export const PublicShell = () => {
               </Link>
             )}
             <Link
+              to="/login"
+              className="hidden items-center gap-2 rounded-xl border border-black/10 bg-white px-3 py-2 text-sm font-semibold text-[#1A1A1A] shadow-sm transition hover:border-black/20 sm:flex"
+            >
+              <LogIn size={15} />
+              Connexion
+            </Link>
+            <Link
               to={`${basePath}/cart`}
               className="relative flex h-10 w-10 items-center justify-center rounded-2xl text-white shadow-sm transition hover:opacity-90"
               style={{ background: color }}
@@ -171,6 +178,14 @@ export const PublicShell = () => {
               ))}
             </nav>
             <div className="p-4 border-t border-black/5">
+              <Link
+                to="/login"
+                onClick={() => setMobileOpen(false)}
+                className="mb-2 flex items-center justify-center gap-2 w-full rounded-2xl border border-black/10 bg-white py-3 text-sm font-bold text-[#1A1A1A]"
+              >
+                <LogIn size={16} />
+                Connexion
+              </Link>
               <Link
                 to={`${basePath}/cart`}
                 onClick={() => setMobileOpen(false)}
