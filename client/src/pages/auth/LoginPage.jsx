@@ -53,6 +53,8 @@ export const LoginPage = () => {
                 ["cuisine@demo.com", "KITCHEN"],
                 ["bar@demo.com", "BAR"]
               ].map(([email, role]) => <span key={email}>{roleLabels[role]}: {email}</span>)}
+              <span>Parapharmacie: parapharmacie@demo.com</span>
+              <span>Ecole privee: ecole@demo.com</span>
             </div>
             <p className="mt-3 text-xs font-bold text-elegant">Mot de passe pour tous: Password123</p>
           </div>

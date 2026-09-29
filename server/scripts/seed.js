@@ -369,6 +369,140 @@ async function main() {
       data: { customerId: customer.id }
     });
   }
+
+  await seedSectorDemos();
+}
+
+// Comptes demo pour d'autres secteurs (type "CAFE" = modules caisse/produits/stock/clients sans salle).
+const sectorDemos = [
+  {
+    name: "Parapharmacie Atlas",
+    slug: "parapharmacie-atlas",
+    address: "Boulevard Zerktouni, Casablanca",
+    phone: "+212600000101",
+    email: "contact@parapharmacie-atlas.ma",
+    primaryColor: "#2f9e8f",
+    adminEmail: "parapharmacie@demo.com",
+    adminName: "Admin Parapharmacie",
+    categories: {
+      "Soins visage": [
+        ["Creme hydratante 50ml", "Hydratation 24h peaux normales a seches.", 89, 20],
+        ["Serum vitamine C", "Eclat et anti-taches, flacon 30ml.", 149, 20]
+      ],
+      "Hygiene": [
+        ["Gel douche doux 400ml", "Sans savon, peaux sensibles.", 39, 20],
+        ["Dentifrice blancheur", "Tube 75ml au fluor.", 32, 20]
+      ],
+      "Bebe et maman": [
+        ["Lait de toilette bebe", "Flacon 500ml hypoallergenique.", 59, 20],
+        ["Creme change 100g", "Protege et apaise.", 45, 20]
+      ],
+      "Complements": [
+        ["Magnesium B6", "Boite de 60 comprimes.", 79, 20],
+        ["Vitamine D3", "Flacon 30ml gouttes.", 65, 20]
+      ]
+    },
+    stock: [
+      ["Creme hydratante 50ml", "Lab Derma", 24, "boite", 10, 55],
+      ["Serum vitamine C", "Lab Derma", 3, "flacon", 6, 95],
+      ["Magnesium B6", "NutriPharma", 40, "boite", 12, 42]
+    ]
+  },
+  {
+    name: "Ecole Privee Al Amal",
+    slug: "ecole-privee-al-amal",
+    address: "Rue Ibn Sina, Rabat",
+    phone: "+212600000202",
+    email: "contact@ecole-al-amal.ma",
+    primaryColor: "#3b5bdb",
+    adminEmail: "ecole@demo.com",
+    adminName: "Directeur Ecole Al Amal",
+    categories: {
+      "Scolarite": [
+        ["Frais mensuels Primaire", "Scolarite mensuelle cycle primaire.", 1200, 0],
+        ["Frais mensuels College", "Scolarite mensuelle cycle college.", 1500, 0],
+        ["Frais d'inscription", "Inscription annuelle.", 2500, 0]
+      ],
+      "Services": [
+        ["Transport scolaire mensuel", "Ramassage matin et soir.", 400, 0],
+        ["Cantine mensuelle", "Dejeuner 20 jours.", 500, 0]
+      ],
+      "Fournitures": [
+        ["Pack fournitures Primaire", "Cahiers, stylos, trousse.", 350, 20],
+        ["Uniforme scolaire", "Blouse + polo.", 280, 20]
+      ]
+    },
+    stock: [
+      ["Pack fournitures Primaire", "Papeterie Centrale", 60, "pack", 15, 250],
+      ["Uniforme scolaire", "Textile Rabat", 8, "piece", 10, 180]
+    ]
+  }
+];
+
+async function seedSectorDemos() {
+  const adminRole = await db.role.findUnique({ where: { name: "ADMIN_ESTABLISHMENT" } });
+
+  for (const demo of sectorDemos) {
+    const data = {
+      name: demo.name,
+      type: "CAFE",
+      address: demo.address,
+      phone: demo.phone,
+      email: demo.email,
+      primaryColor: demo.primaryColor
+    };
+    const establishment = await db.establishment.upsert({
+      where: { slug: demo.slug },
+      update: { ...data, isActive: true },
+      create: { ...data, slug: demo.slug }
+    });
+
+    await db.user.upsert({
+      where: { email: demo.adminEmail },
+      update: {
+        name: demo.adminName,
+        roleId: adminRole.id,
+        roleName: "ADMIN_ESTABLISHMENT",
+        establishmentId: establishment.id,
+        isActive: true
+      },
+      create: {
+        name: demo.adminName,
+        email: demo.adminEmail,
+        password: await bcrypt.hash("Password123", 12),
+        roleId: adminRole.id,
+        roleName: "ADMIN_ESTABLISHMENT",
+        establishmentId: establishment.id
+      }
+    });
+
+    let sortOrder = 0;
+    for (const [categoryName, items] of Object.entries(demo.categories)) {
+      let category = await db.category.findFirst({ where: { name: categoryName, establishmentId: establishment.id } });
+      if (!category) {
+        category = await db.category.create({
+          data: { name: categoryName, sortOrder: sortOrder, establishmentId: establishment.id }
+        });
+      }
+      sortOrder += 1;
+
+      for (const [name, description, price, tva] of items) {
+        const product = { name, description, price, tva, preparationTime: 0, categoryId: category.id };
+        await db.product.upsert({
+          where: { name, establishmentId: establishment.id },
+          update: { ...product, establishmentId: establishment.id, isAvailable: true },
+          create: { ...product, establishmentId: establishment.id, isAvailable: true }
+        });
+      }
+    }
+
+    await db.stock.createMany({
+      data: demo.stock.map(([name, supplierName, quantity, unit, alertThreshold, cost]) => ({
+        name, supplierName, quantity, unit, alertThreshold, cost, establishmentId: establishment.id
+      })),
+      skipDuplicates: true
+    });
+  }
 }
 
 main()
